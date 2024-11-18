@@ -1,30 +1,25 @@
-const http = require('http')
+const http = require('http');
 
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require('express');
+const bodyParser = require('body-parser');
 
-const app = express()
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-app.use(bodyParser.urlencoded({ extended: false }))
+const app = express();
 
-app.use('/product-name', (req, res, next) => {
-  res.send(
-    '<form action="/product" method="POST"><input type="text" name="title"> <br><input type="text" name="size"><button type="submit">Add</button></form>'
-  )
-})
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post('/product', (req, res, next) => {
-  const body = { ...req.body }
-  console.log(body)
-  res.redirect('/')
-})
+app.use('/admin', adminRoutes);
 
-app.use('/', (req, res, next) => {
-  res.send('<h1>hello</h1>')
-})
+app.use('/shop', shopRoutes);
 
-const server = http.createServer(app)
+app.use((req, res, next) => {
+  res.status(404).send('<h1> 404 Page Not Found </h1>');
+});
+
+const server = http.createServer(app);
 
 server.listen(3000, () => {
-  console.log('listening')
-})
+  console.log('listening');
+});
